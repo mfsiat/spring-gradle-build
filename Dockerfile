@@ -1,6 +1,6 @@
-FROM gradle:7.5 AS gradle-bld
+FROM gradle:7.5 AS builder
 
-WORKDIR /app/
+WORKDIR /app
 
 COPY . .
 
@@ -8,8 +8,8 @@ RUN gradle build
 
 FROM openjdk:18
 
-COPY --from=gradle-bld /app/build/libs/newspringdemo-0.0.1-*.war /tmp/app.jar
+COPY --from=builder /app/build/libs/newspringdemo-0.0.1-SNAPSHOT.war ./app.war
 
 EXPOSE 8080
 
-ENTRYPOINT [ "sh", "-c", "java -jar /tmp/app.jar"]
+ENTRYPOINT [ "java", "-jar", "app.war"]
